@@ -296,7 +296,7 @@ class DecodeReader : public AsyncWorker {
             fprintf(stderr, "no more video packets!\n");
             break;
           }else{
-            // fprintf(stderr, "not finished decoding.. wait and try again\n");
+            fprintf(stderr, "not finished decoding.. wait and try again\n");
             Sleep(25);
             continue;
           }
@@ -338,7 +338,7 @@ class DecodeReader : public AsyncWorker {
   }
 
   void HandleOKCallback(){
-
+    fprintf(stderr, "finished video read loop\n");
     Nan::HandleScope scope;
     Local<Object> obj = Nan::New<Object>();
     if(videoIsFinished > 0){
