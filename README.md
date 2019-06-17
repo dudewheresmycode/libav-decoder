@@ -5,8 +5,9 @@ A basic audio/video decoder for nodejs using libav.
 The module provides basic asynchronous audio / video decoding in javascript using [libav](https://www.libav.org/). It outputs raw planar YUV (YCbCr) data for video frames, and raw PCM data.
 
 
-To display the YUV data, checkout [yuv-buffer](https://github.com/brion/yuv-buffer)
+To display the YUV data, checkout @brion/yuv-buffer and @samirkumardas's [pcm-player](https://github.com/samirkumardas/pcm-player)
 
+Here's an basic example using those two libraries.
 ```javascript
 let probe
 //init
@@ -69,5 +70,3 @@ function readAudio(){
   })
 }
 ```
-
-https://github.com/samirkumardas/pcm-player
