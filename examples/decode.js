@@ -5,8 +5,11 @@ let _readTime, _readATime
 let shouldQuit = false
 let isReady = false
 
+let inputFile = "/Users/addroid/Movies/sample.mpg"
+// let inputFile = __dirname + "/assets/sintel_trailer-480p.mp4"
 //open file
-Decoder.open(path.resolve(__dirname + "/assets/sintel_trailer-480p.mp4"), (err, fileinfo) => {
+Decoder.open(path.resolve(inputFile), (err, fileinfo) => {
+
   if(err){ console.log("Error: %s", err); return; }
   //will return info like width, height, framerate, etc..
   console.log(fileinfo)
@@ -22,6 +25,7 @@ Decoder.open(path.resolve(__dirname + "/assets/sintel_trailer-480p.mp4"), (err, 
 
 
 function onDecodeReady(){
+  console.log('ready!');
   readVideo();
   readAudio();
 }

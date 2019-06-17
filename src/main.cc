@@ -482,15 +482,15 @@ class DecodeWorker : public AsyncProgressWorker {
 
 
       if((videoIsFinished == 0 && videoq.size > MAX_VIDEOQ_SIZE) || (audioIsFinished == 0 && audioq.size > MAX_AUDIOQ_SIZE)){
-        if(queueReady==0){
-          queueReady=1;
-          fprintf(stderr, "c+: ready...\n");
-          progress.Signal();
-        }
         Sleep(25); //sleep for a second?
         continue;
       }
 
+      if(queueReady==0){
+        queueReady=1;
+        fprintf(stderr, "c+: ready...\n");
+        progress.Signal();
+      }
 
       if(readFrame = av_read_frame(pFormatCtx, packet) < 0) {
         if(pFormatCtx->pb->error == 0) {
@@ -506,9 +506,10 @@ class DecodeWorker : public AsyncProgressWorker {
         frameIndex++;
         packet_queue_put(&videoq, packet);
         // fprintf(stderr, "%s: [worker] Finished Decoding\n", timeStr());
-        // fprintf(stderr, "%s - videoq.nb_packets: %d\n", timeStr(), videoq.nb_packets);
+        fprintf(stderr, "videoq.nb_packets: %d\n", videoq.nb_packets);
       } else if(packet->stream_index == audioStream) {
         packet_queue_put(&audioq, packet);
+        fprintf(stderr, "audioq.nb_packets: %d\n", audioq.nb_packets);
       } else {
         fprintf(stderr, "free: %d\n");
         av_free_packet(packet);
