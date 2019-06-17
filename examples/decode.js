@@ -31,13 +31,14 @@ function readVideo(){
 
     switch(frame.type){
       case "frame":
-        //do somewith with the YUV frame data
-        // renderFrame(frame)
+        /*
+          Do somewith with the YUV frame data
+          renderFrame(frame)
+        */
         console.log("Video Frame", frame);
-        //read another frame as fast as possible
+        // read another frame as fast as possible
         // setImmediate(() => { readVideo(event); });
-        // or read at a frame rate?
-        return setTimeout(readVideo, 1000/60);
+        return setTimeout(readVideo, 10);
       case "finished":
         //video decoding has completed
         console.log("finished decoding video");
@@ -51,8 +52,7 @@ function readAudio(){
       case 'samples':
         console.log("Audio Samples", frame);
         // setImmediate(() => { readAudio(event); })
-        setTimeout(readAudio, 1000/60);
-        break;
+        return setTimeout(readAudio, 10);
       case 'finished':
         console.log("finished decoding audio");
         break;
