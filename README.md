@@ -5,12 +5,14 @@ A basic audio/video decoder for nodejs using libav.
 The module provides basic asynchronous audio / video decoding in javascript using [libav](https://www.libav.org/). It outputs raw planar YUV (YCbCr) data for video frames, and raw PCM data.
 
 
-To display the YUV data, checkout @brion/yuv-buffer and @samirkumardas's [pcm-player](https://github.com/samirkumardas/pcm-player)
+Below is an example using the [yuv-buffer](https://github.com/brion/yuv-buffer) and [pcm-player](https://github.com/samirkumardas/pcm-player) libraries to display the data.
 
-Here's an basic example using those two libraries.
 ```javascript
+const LibAVDecoder = require('libav-decoder');
+const decoder = new LibAVDecoder();
+
 let probe
-//init
+
 const pcm_audio = new PCMPlayer({
     encoding: '16bitInt', //outputs 16-bit raw PCM
     channels: probe.audio.channels,
