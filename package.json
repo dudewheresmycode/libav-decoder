@@ -1,0 +1,18 @@
+{
+  "name": "libav-decoder",
+  "version": "0.0.1",
+  "description": "A very basic libav-based audio/video decoder.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "install": "node-gyp rebuild",
+    "build": "node-gyp rebuild"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "dependencies": {
+    "nan": "^2.14.0"
+  }
+}
