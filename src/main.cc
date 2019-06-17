@@ -19,6 +19,8 @@ extern "C" {
   #include <libavutil/avstring.h>
   #include <libavutil/time.h>
   #include <libavutil/opt.h>
+  #include <libavutil/imgutils.h>
+
 }
 
 #include "time_value.h"
@@ -271,11 +273,13 @@ class DecodeReader : public AsyncWorker {
       AVPacket pkt1, *packet = &pkt1;
       int frameFinished;
 
-      pFrame = av_frame_alloc();
+      // pFrame = av_frame_alloc();
+      if ((av_image_alloc(pFrameOut->data, pFrameOut->linesize, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height, pix_fmt, 1)) < 0) {
+          fprintf(stderr, "Could not allocate destination image\n");
+          return;
+      }
+
       yuv = new YUVImage;
-      // wav = new RawAudio;
-      // wav->size = 0;
-      // fprintf(stderr, "read...\n");
 
       int i=0;
       for(;;) {
@@ -312,7 +316,7 @@ class DecodeReader : public AsyncWorker {
         yuv->pts = pts;
         // fprintf(stderr, "pts: %f\n", pts);
         if(frameFinished) {
-          sws_scale(sws_ctx, (uint8_t const * const *)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->coded_height, pFrameOut->data, pFrameOut->linesize);
+          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->coded_height, pFrameOut->data, pFrameOut->linesize);
           frameDecoded++;
           hasDecodedFrame=true;
           extractYUV();
