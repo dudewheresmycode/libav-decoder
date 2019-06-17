@@ -465,7 +465,7 @@ class DecodeWorker : public AsyncProgressWorker {
          pCodecCtx->pix_fmt,
          pCodecCtxInput->width,
          pCodecCtxInput->height,
-         PIX_FMT_YUV420P,
+         pix_fmt,
          SWS_BILINEAR,
          NULL,
          NULL,
