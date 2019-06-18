@@ -54,6 +54,7 @@ typedef struct YUVImage {
 typedef struct RGBAImage {
   size_t size;
   uint8_t *pixels;
+  int stride;
 };
 
 typedef struct RawAudio {
@@ -120,6 +121,7 @@ void cleanup(){
   avformat_close_input(&pFormatCtx);
 }
 void extractRGBA(){
+  rgb->stride = pFrameOut->linesize[0];
   rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
   rgb->pixels = pFrameOut->data[0];
 }
@@ -366,6 +368,8 @@ class DecodeReader : public AsyncWorker {
     }else if(hasDecodedFrame){
       obj->Set(Nan::New<String>("type").ToLocalChecked(), Nan::New<String>("frame").ToLocalChecked());
 
+
+      obj->Set(Nan::New<String>("stride").ToLocalChecked(), Nan::New<Number>(rgb->stride).ToLocalChecked());
       obj->Set(Nan::New<String>("pixels").ToLocalChecked(), Nan::CopyBuffer((char *)rgb->pixels, rgb->size).ToLocalChecked());
 
       // obj->Set(Nan::New<String>("avY").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avY, yuv->size_y).ToLocalChecked());
