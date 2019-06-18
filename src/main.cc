@@ -369,7 +369,7 @@ class DecodeReader : public AsyncWorker {
       obj->Set(Nan::New<String>("type").ToLocalChecked(), Nan::New<String>("frame").ToLocalChecked());
 
 
-      obj->Set(Nan::New<String>("stride").ToLocalChecked(), Nan::New<Number>(rgb->stride).ToLocalChecked());
+      obj->Set(Nan::New<String>("stride").ToLocalChecked(), Nan::New<Number>(rgb->stride));
       obj->Set(Nan::New<String>("pixels").ToLocalChecked(), Nan::CopyBuffer((char *)rgb->pixels, rgb->size).ToLocalChecked());
 
       // obj->Set(Nan::New<String>("avY").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avY, yuv->size_y).ToLocalChecked());
