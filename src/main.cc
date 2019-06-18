@@ -124,7 +124,7 @@ void extractRGBA(){
   rgb->stride = pFrameOut->linesize[0];
   //rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
   rgb->size = (rgb->stride/4) * pCodecCtxInput->coded_height * 4;
-  rgb->pixels = pFrameOut->data[0];
+  rgb->pixels = pFrameOut->extended_data[0];
 }
 void extractYUV(){
 
