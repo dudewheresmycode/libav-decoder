@@ -123,7 +123,7 @@ void cleanup(){
 void extractRGBA(){
   rgb->stride = pFrameOut->linesize[0];
   //rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
-  rgb->size = pCodecCtxInput->coded_width * pCodecCtxInput->coded_height * 4;
+  rgb->size = (rgb->stride/4) * pCodecCtxInput->coded_height * 4;
   rgb->pixels = pFrameOut->data[0];
 }
 void extractYUV(){
@@ -338,7 +338,7 @@ class DecodeReader : public AsyncWorker {
         yuv->pts = pts;
         // fprintf(stderr, "pts: %f\n", pts);
         if(frameFinished) {
-          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
+          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->coded_height, pFrameOut->data, pFrameOut->linesize);
           frameDecoded++;
           hasDecodedFrame=true;
           // extractYUV();
@@ -492,8 +492,8 @@ class DecodeWorker : public AsyncProgressWorker {
     avpicture_fill((AVPicture *)pFrameOut, bufferout, pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
 
     sws_ctx = sws_getContext(
-         pCodecCtxInput->width,
-         pCodecCtxInput->height,
+         pCodecCtxInput->coded_width,
+         pCodecCtxInput->coded_height,
          pCodecCtx->pix_fmt,
          pCodecCtxInput->coded_width,
          pCodecCtxInput->coded_height,
