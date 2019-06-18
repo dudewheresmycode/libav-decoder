@@ -125,6 +125,9 @@ void extractYUV(){
   yuv->size_u = (yuv->pitchU * pCodecCtxInput->coded_height / 2);
   yuv->size_v = (yuv->pitchV * pCodecCtxInput->coded_height / 2);
 
+  yuv->w = pFrameOut->w;
+  yuv->h = pFrameOut->h;
+
 }
 
 
@@ -353,8 +356,8 @@ class DecodeReader : public AsyncWorker {
       obj->Set(Nan::New<String>("pitchU").ToLocalChecked(), Nan::New<Integer>(yuv->pitchU));
       obj->Set(Nan::New<String>("pitchV").ToLocalChecked(), Nan::New<Integer>(yuv->pitchV));
 
-      obj->Set(Nan::New<String>("width").ToLocalChecked(), Nan::New<Number>(pFrameOut->width));
-      obj->Set(Nan::New<String>("height").ToLocalChecked(), Nan::New<Number>(pFrameOut->height));
+      obj->Set(Nan::New<String>("width").ToLocalChecked(), Nan::New<Number>(yuv->w));
+      obj->Set(Nan::New<String>("height").ToLocalChecked(), Nan::New<Number>(yuv->h));
 
       obj->Set(Nan::New<String>("frame").ToLocalChecked(), Nan::New<Number>(frameDecoded));
       obj->Set(Nan::New<String>("pts").ToLocalChecked(), Nan::New<Number>(yuv->pts));
