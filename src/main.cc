@@ -453,17 +453,16 @@ class DecodeWorker : public AsyncProgressWorker {
     // int size = avpicture_get_size(pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
     // uint8_t* buffer = (uint8_t*)av_malloc(size);
     //
-
-    // int sizeout = avpicture_get_size(pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
-    // uint8_t* bufferout = (uint8_t*)av_malloc(sizeout);
-    // avpicture_fill((AVPicture *)pFrameOut, bufferout, pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
+    int sizeout = avpicture_get_size(pix_fmt, pCodecCtxInput->width, pCodecCtxInput->height);
+    uint8_t* bufferout = (uint8_t*)av_malloc(sizeout);
+    avpicture_fill((AVPicture *)pFrameOut, bufferout, pix_fmt, pCodecCtxInput->width, pCodecCtxInput->height);
 
     sws_ctx = sws_getContext(
          pCodecCtxInput->width,
          pCodecCtxInput->height,
          pCodecCtx->pix_fmt,
-         pCodecCtxInput->coded_width,
-         pCodecCtxInput->coded_height,
+         pCodecCtxInput->width,
+         pCodecCtxInput->height,
          pix_fmt,
          SWS_BILINEAR,
          NULL,
