@@ -114,6 +114,9 @@ void cleanup(){
 
 void extractYUV(){
 
+  yuv->w = pFrameOut->width;
+  yuv->h = pFrameOut->height;
+
   yuv->pitchY = pFrameOut->linesize[0];
   yuv->pitchU = pFrameOut->linesize[1];
   yuv->pitchV = pFrameOut->linesize[2];
@@ -122,12 +125,12 @@ void extractYUV(){
   yuv->avU = pFrameOut->data[1];
   yuv->avV = pFrameOut->data[2];
 
-  yuv->size_y = (yuv->pitchY * pCodecCtxInput->coded_height);
-  yuv->size_u = (yuv->pitchU * pCodecCtxInput->coded_height / 2);
-  yuv->size_v = (yuv->pitchV * pCodecCtxInput->coded_height / 2);
-
-  yuv->w = pFrameOut->width;
-  yuv->h = pFrameOut->height;
+  // yuv->size_y = (yuv->pitchY * pCodecCtxInput->coded_height);
+  // yuv->size_u = (yuv->pitchU * pCodecCtxInput->coded_height / 2);
+  // yuv->size_v = (yuv->pitchV * pCodecCtxInput->coded_height / 2);
+  yuv->size_y = (yuv->pitchY * pCodecCtxInput->height);
+  yuv->size_u = (yuv->pitchU * pCodecCtxInput->height / 2);
+  yuv->size_v = (yuv->pitchV * pCodecCtxInput->height / 2);
 
 }
 
@@ -320,7 +323,7 @@ class DecodeReader : public AsyncWorker {
         yuv->pts = pts;
         // fprintf(stderr, "pts: %f\n", pts);
         if(frameFinished) {
-          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
+          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->extended_data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
           frameDecoded++;
           hasDecodedFrame=true;
           extractYUV();
