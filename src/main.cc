@@ -32,7 +32,8 @@ extern "C" {
 #define MAX_AUDIO_FRAME_SIZE 192000
 
 typedef struct YUVImage {
-  int w, h;
+  int w;
+  int h;
   int planes;
 
   uint32_t pitchY;
@@ -125,8 +126,8 @@ void extractYUV(){
   yuv->size_u = (yuv->pitchU * pCodecCtxInput->coded_height / 2);
   yuv->size_v = (yuv->pitchV * pCodecCtxInput->coded_height / 2);
 
-  yuv->w = pFrameOut->w;
-  yuv->h = pFrameOut->h;
+  yuv->w = pFrameOut->width;
+  yuv->h = pFrameOut->height;
 
 }
 
