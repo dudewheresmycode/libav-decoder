@@ -14,5 +14,10 @@
   "gypfile": true,
   "dependencies": {
     "nan": "^2.14.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "ws": "^7.0.1"
   }
 }

@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Decode Test</title>
+    <script>
+    //hacky way of using npm modules in browser
+    window.module = { exports: window }
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/samirkumardas/pcm-player/pcm-player.js"></script>
+    <script src="https://unpkg.com/yuv-buffer@1.0.0/yuv-buffer.js"></script>
+    <style>
+      body { text-align: center; }
+      .button-group { margin-bottom: 1rem; }
+      button { display: inline-block; font-size: 18px; padding: 1rem 2rem; border: 1px solid #000; background-color: #000; color: #fff;  }
+      canvas { background-color: #000; }
+    </style>
+  </head>
+  <body>
+    <div class="button-group">
+      <button class="play-button" data-key="mp4">Play MP4</button>
+      <button class="play-button" data-key="avi">Play AVI</button>
+    </div>
+    <div>
+      <canvas id="video_canvas" width="854" height="480"></canvas>
+    </div>
+    <script src="player.js"></script>
+  </body>
+</html>

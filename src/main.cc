@@ -121,9 +121,9 @@ void extractYUV(){
   yuv->avU = pFrameOut->data[1];
   yuv->avV = pFrameOut->data[2];
 
-  yuv->size_y = (yuv->pitchY * pCodecCtxInput->height);
-  yuv->size_u = (yuv->pitchU * pCodecCtxInput->height / 2);
-  yuv->size_v = (yuv->pitchV * pCodecCtxInput->height / 2);
+  yuv->size_y = (yuv->pitchY * pCodecCtxInput->coded_height);
+  yuv->size_u = (yuv->pitchU * pCodecCtxInput->coded_height / 2);
+  yuv->size_v = (yuv->pitchV * pCodecCtxInput->coded_height / 2);
 
 }
 
@@ -273,11 +273,11 @@ class DecodeReader : public AsyncWorker {
       AVPacket pkt1, *packet = &pkt1;
       int frameFinished;
 
-      // pFrame = av_frame_alloc();
-      if ((av_image_alloc(pFrameOut->data, pFrameOut->linesize, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height, pix_fmt, 1)) < 0) {
-          fprintf(stderr, "Could not allocate destination image\n");
-          return;
-      }
+      pFrame = av_frame_alloc();
+      // if ((av_image_alloc(pFrameOut->data, pFrameOut->linesize, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height, pix_fmt, 1)) < 0) {
+      //     fprintf(stderr, "Could not allocate destination image\n");
+      //     return;
+      // }
 
       yuv = new YUVImage;
 
@@ -506,10 +506,10 @@ class DecodeWorker : public AsyncProgressWorker {
         frameIndex++;
         packet_queue_put(&videoq, packet);
         // fprintf(stderr, "%s: [worker] Finished Decoding\n", timeStr());
-        fprintf(stderr, "videoq.nb_packets: %d\n", videoq.nb_packets);
+        // fprintf(stderr, "videoq.nb_packets: %d\n", videoq.nb_packets);
       } else if(packet->stream_index == audioStream) {
         packet_queue_put(&audioq, packet);
-        fprintf(stderr, "audioq.nb_packets: %d\n", audioq.nb_packets);
+        // fprintf(stderr, "audioq.nb_packets: %d\n", audioq.nb_packets);
       } else {
         fprintf(stderr, "free: %d\n");
         av_free_packet(packet);
