@@ -120,7 +120,7 @@ void cleanup(){
   avformat_close_input(&pFormatCtx);
 }
 void extractRGBA(){
-  rgb->size = pFrameOut->linesize[0];
+  rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
   rgb->pixels = pFrameOut->data[0];
 }
 void extractYUV(){
