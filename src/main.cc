@@ -316,7 +316,7 @@ class DecodeReader : public AsyncWorker {
         yuv->pts = pts;
         // fprintf(stderr, "pts: %f\n", pts);
         if(frameFinished) {
-          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->coded_height, pFrameOut->data, pFrameOut->linesize);
+          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
           frameDecoded++;
           hasDecodedFrame=true;
           extractYUV();
@@ -453,9 +453,11 @@ class DecodeWorker : public AsyncProgressWorker {
     // int size = avpicture_get_size(pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
     // uint8_t* buffer = (uint8_t*)av_malloc(size);
     //
-    int sizeout = avpicture_get_size(pix_fmt, pCodecCtxInput->width, pCodecCtxInput->height);
+    int sizeout = avpicture_get_size(pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
     uint8_t* bufferout = (uint8_t*)av_malloc(sizeout);
-    avpicture_fill((AVPicture *)pFrameOut, bufferout, pix_fmt, pCodecCtxInput->width, pCodecCtxInput->height);
+
+    // avpicture_fill((AVPicture *)pFrameCopy, buffer, pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
+    avpicture_fill((AVPicture *)pFrameOut, bufferout, pix_fmt, pCodecCtxInput->coded_width, pCodecCtxInput->coded_height);
 
     sws_ctx = sws_getContext(
          pCodecCtxInput->width,
