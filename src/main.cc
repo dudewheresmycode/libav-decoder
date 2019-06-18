@@ -51,6 +51,11 @@ typedef struct YUVImage {
   double pts;
 
 };
+typedef struct RGBAImage {
+  size_t size;
+  uint8_t *pixels;
+};
+
 typedef struct RawAudio {
   uint8_t *data;
   size_t size;
@@ -79,13 +84,16 @@ AVFrame         *pFrameOut = NULL;
 AVFrame         *pFrameCopy = NULL;
 AVFrame         *aFrame = NULL;
 
-AVPixelFormat   pix_fmt = AV_PIX_FMT_YUV420P; //AV_PIX_FMT_YUV420P; //AV_PIX_FMT_RGB24;
+// AVPixelFormat   pix_fmt = AV_PIX_FMT_YUV420P; //AV_PIX_FMT_YUV420P; //AV_PIX_FMT_RGB24;
+AVPixelFormat   pix_fmt = AV_PIX_FMT_RGBA; //AV_PIX_FMT_YUV420P; //AV_PIX_FMT_RGB24;
+
 int             shouldQuit;
 uint8_t *buffer;
 AVPacket        packet;
 struct SwsContext   *sws_ctx            = NULL;
 struct SwrContext *swr;
 YUVImage *yuv;
+RGBAImage *rgb;
 RawAudio *wav;
 int64_t in_channel_layout;
 
@@ -111,7 +119,10 @@ char *timeStr(){
 void cleanup(){
   avformat_close_input(&pFormatCtx);
 }
-
+void extractRGBA(){
+  rgb->size = pFrameOut->linesize[0];
+  rgb->pixels = pFrameOut->data[0];
+}
 void extractYUV(){
 
   yuv->w = pFrameOut->width;
@@ -287,6 +298,7 @@ class DecodeReader : public AsyncWorker {
       // }
 
       yuv = new YUVImage;
+      rgb = new RGBAImage;
 
       int i=0;
       for(;;) {
@@ -323,10 +335,11 @@ class DecodeReader : public AsyncWorker {
         yuv->pts = pts;
         // fprintf(stderr, "pts: %f\n", pts);
         if(frameFinished) {
-          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->extended_data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
+          sws_scale(sws_ctx, (const uint8_t * const*)pFrame->data, pFrame->linesize, 0, pCodecCtxInput->height, pFrameOut->data, pFrameOut->linesize);
           frameDecoded++;
           hasDecodedFrame=true;
-          extractYUV();
+          // extractYUV();
+          extractRGBA();
           break;
         }
         //no frame found.. free this packet and loop again ...
@@ -352,13 +365,16 @@ class DecodeReader : public AsyncWorker {
       obj->Set(Nan::New<String>("type").ToLocalChecked(), Nan::New<String>("finished").ToLocalChecked());
     }else if(hasDecodedFrame){
       obj->Set(Nan::New<String>("type").ToLocalChecked(), Nan::New<String>("frame").ToLocalChecked());
-      obj->Set(Nan::New<String>("avY").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avY, yuv->size_y).ToLocalChecked());
-      obj->Set(Nan::New<String>("avU").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avU, yuv->size_u).ToLocalChecked());
-      obj->Set(Nan::New<String>("avV").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avV, yuv->size_v).ToLocalChecked());
 
-      obj->Set(Nan::New<String>("pitchY").ToLocalChecked(), Nan::New<Integer>(yuv->pitchY));
-      obj->Set(Nan::New<String>("pitchU").ToLocalChecked(), Nan::New<Integer>(yuv->pitchU));
-      obj->Set(Nan::New<String>("pitchV").ToLocalChecked(), Nan::New<Integer>(yuv->pitchV));
+      obj->Set(Nan::New<String>("pixels").ToLocalChecked(), Nan::CopyBuffer((char *)rgb->pixels, rgb->size).ToLocalChecked());
+
+      // obj->Set(Nan::New<String>("avY").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avY, yuv->size_y).ToLocalChecked());
+      // obj->Set(Nan::New<String>("avU").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avU, yuv->size_u).ToLocalChecked());
+      // obj->Set(Nan::New<String>("avV").ToLocalChecked(), Nan::CopyBuffer((char *)yuv->avV, yuv->size_v).ToLocalChecked());
+      //
+      // obj->Set(Nan::New<String>("pitchY").ToLocalChecked(), Nan::New<Integer>(yuv->pitchY));
+      // obj->Set(Nan::New<String>("pitchU").ToLocalChecked(), Nan::New<Integer>(yuv->pitchU));
+      // obj->Set(Nan::New<String>("pitchV").ToLocalChecked(), Nan::New<Integer>(yuv->pitchV));
 
       obj->Set(Nan::New<String>("width").ToLocalChecked(), Nan::New<Number>(yuv->w));
       obj->Set(Nan::New<String>("height").ToLocalChecked(), Nan::New<Number>(yuv->h));
@@ -444,6 +460,7 @@ class DecodeWorker : public AsyncProgressWorker {
     pFrameOut = av_frame_alloc();
     pFrame = av_frame_alloc();
     yuv = new YUVImage;
+    rgb = new RGBAImage;
     wav = new RawAudio;
     wav->size = 0;
     if (!pFrame) {
