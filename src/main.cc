@@ -122,7 +122,8 @@ void cleanup(){
 }
 void extractRGBA(){
   rgb->stride = pFrameOut->linesize[0];
-  rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
+  //rgb->size = pFrameOut->linesize[0] * pCodecCtxInput->coded_height;
+  rgb->size = pCodecCtxInput->coded_width * pCodecCtxInput->coded_height * 4;
   rgb->pixels = pFrameOut->data[0];
 }
 void extractYUV(){
@@ -494,8 +495,8 @@ class DecodeWorker : public AsyncProgressWorker {
          pCodecCtxInput->width,
          pCodecCtxInput->height,
          pCodecCtx->pix_fmt,
-         pCodecCtxInput->width,
-         pCodecCtxInput->height,
+         pCodecCtxInput->coded_width,
+         pCodecCtxInput->coded_height,
          pix_fmt,
          SWS_BILINEAR,
          NULL,
